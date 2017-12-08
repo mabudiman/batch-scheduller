@@ -15,8 +15,6 @@ public class BatchScheduller {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
-        DummyData dumb = new DummyData(4,8,6,70);
         
     }
     
