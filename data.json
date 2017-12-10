@@ -1,0 +1,34 @@
+{
+  "events": {
+    "1": {
+      "title": "M. Arief Budiman",
+      "description": "Penjadwalan sidang skripsi dengan pewarnaan graf dan tambahan constraint",
+      "time_length": "60",
+      "personils": {
+        "dosen_1": "Rani Megasari",
+        "dosen_2": "Rosa A S",
+        "dosen_3": "Jajang"
+      }
+    },
+    "2": {
+      "title": "M. Arief Budiman",
+      "description": "Penjadwalan sidang skripsi dengan pewarnaan graf dan tambahan constraint",
+      "time_length": "60",
+      "personils": {
+        "dosen_1": "Rani Megasari",
+        "dosen_2": "Rosa A S",
+        "dosen_3": "Jajang"
+      }
+    },
+    "3": {
+      "title": "M. Arief Budiman",
+      "description": "Penjadwalan sidang skripsi dengan pewarnaan graf dan tambahan constraint",
+      "time_length": "60",
+      "personils": {
+        "dosen_1": "Rani Megasari",
+        "dosen_2": "Rosa A S",
+        "dosen_3": "Jajang"
+      }
+    }
+  }
+}

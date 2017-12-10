@@ -5,20 +5,13 @@
  */
 package batch.scheduller;
 
-import org.json.simple.JSONArray;
 /**
  *
  * @author M. Arief Budiman
  */
-public class BatchScheduller {
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        
-        
-        
-    }
+public class Personil {
+    
+    public String name;
+    public TimeTable schedule;
     
 }
