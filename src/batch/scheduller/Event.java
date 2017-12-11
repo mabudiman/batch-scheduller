@@ -30,4 +30,18 @@ public class Event {
     /*
         bunch of personil that invited to the event
     */
+
+    public Event(String title, String description, int time_length, Personil[] personils) {
+        this.title = title;
+        this.description = description;
+        this.time_length = time_length;
+        this.personils = personils;
+    }
+
+    public Event(String title, int time_length) {
+        this.title = title;
+        this.time_length = time_length;
+    }
+    
+    
 }
