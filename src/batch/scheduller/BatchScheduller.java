@@ -1,7 +1,18 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2017 Arief
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package batch.scheduller;
 
@@ -31,10 +42,15 @@ public class BatchScheduller {
      */
     @SuppressWarnings("unchecked")
     public static void main(String[] args) {
-        //JSON parser object to parse read file
+        // JSON parser object to parse read file
         JSONParser jsonParser = new JSONParser();
+        // personils_data is existing every personil schedule
         Map<String,Personil> personils_data = new HashMap<>();
+        // events is every event to be scheduled
         Event[] events = new Event[]{};
+        // detail timetable variables
+        int time_block;
+        int total_slot;
          
         try (FileReader reader = new FileReader("data.json"))
         {
@@ -42,12 +58,22 @@ public class BatchScheduller {
             Object data = jsonParser.parse(reader);
             // System.out.println(data);
             
+            // Parse data.json (details) into time_block, total_slots
+            time_block = parseTimeBlockJson((JSONObject) data);
+            total_slot = parseTotalSLotJson((JSONObject) data);
+            
             // Parse data.json (existing_schedule) into personils_data
-            personils_data = parseDataJson((JSONObject) data);
+            personils_data = parseDataJson((JSONObject) data,time_block,total_slot);
             
             // Parse data.json (events) into events
             events = parseEventJson((JSONObject) data, personils_data);
- 
+            
+            
+            // Check data for log
+            // showParsedData(personils_data,events);
+            
+            
+            
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -57,7 +83,7 @@ public class BatchScheduller {
         }
     }
     
-    private static Map<String,Personil> parseDataJson(JSONObject data)
+    private static Map<String,Personil> parseDataJson(JSONObject data, int time_block, int total_slot)
     {
         Map<String,Personil> personils_data = new HashMap<>();
         
@@ -69,7 +95,7 @@ public class BatchScheduller {
             String name = (String) person.get("name");
             String schedule = (String) person.get("schedule");
             //System.out.println( name + " | " + schedule);
-            personils_data.put(name, new Personil(name, new TimeTable(60,7,schedule)));
+            personils_data.put(name, new Personil(name, new TimeTable(time_block,total_slot,schedule)));
         }
         
         return personils_data;
@@ -103,5 +129,40 @@ public class BatchScheduller {
         
         return result;
     }
+    
+    public static int parseTimeBlockJson(JSONObject data) {
+        JSONObject details = (JSONObject) data.get("details");
+        return (int) details.get("time_block");
+    }
+    
+    public static int parseTotalSlotJson(JSONObject data) {
+        JSONObject details = (JSONObject) data.get("details");
+        return (int) details.get("total_slot");
+    }
+    
+    public static void showParsedData(Map<String,Personil> personils_data, Event[] events) {
+        // Check personils data
+        for (Map.Entry entry : personils_data.entrySet()) {
+            System.out.print("key: " + entry.getKey() + " | value :");
+            Personil p = (Personil) entry.getValue();
+            System.out.print(p.name);
+            TimeTable t = p.schedule;
+            for (Event ts : t.time_slots) {
+                if(ts != null) {
+                    System.out.print(" | " + ts.title);
+                }else{
+                    System.out.print(" | kosong");
+                }
+            }
+            System.out.print("\n");
+        }
+
+        // Check events data
+        for (Event event : events) {
+            System.out.println(event.title);
+        }
+    }
+    
+    
     
 }

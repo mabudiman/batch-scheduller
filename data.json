@@ -1,48 +1,98 @@
 {
   "events": [
     {
-      "title": "M. Arief Budiman 1",
-      "description": "Penjadwalan sidang skripsi dengan pewarnaan graf dan tambahan constraint",
+      "title": "Ferdila Rahmi",
+      "description": "Sidang Skripsi",
       "time_length": "60",
       "personils": [
-        "Rani Megasari",
-        "Rosa A S",
-        "Jajang"
+        "Dr. H. Enjang Ali Nurdin, M.Kom.",
+        "Jajang Kusnendar, M.T.",
+        "Wahyudin, M.T."
       ]
     },
     {
-      "title": "M. Arief Budiman 2",
-      "description": "Penjadwalan sidang skripsi dengan pewarnaan graf dan tambahan constraint",
+      "title": "Macrita Aulia F.",
+      "description": "Sidang Skripsi",
       "time_length": "60",
       "personils": [
-        "Rani Megasari",
-        "Rosa A S",
-        "Jajang"
+        "Jajang Kusnendar, M.T.",
+        "Drs. H. Eka Fitriaja R, MT",
+        "Wahyudin, M.T."
       ]
     },
     {
-      "title": "M. Arief Budiman 3",
-      "description": "Penjadwalan sidang skripsi dengan pewarnaan graf dan tambahan constraint",
+      "title": "Widia Hijrah Fitriani",
+      "description": "Sidang Skripsi",
       "time_length": "60",
       "personils": [
-        "Rani Megasari",
-        "Rosa A S",
-        "Jajang"
+        "Dr. Yudi Wiisono, M.T.",
+        "Jajang Kusnendar, M.T.",
+        "Drs. H. Eka Fitriaja R, MT"
+      ]
+    },
+    {
+      "title": "Farhan Maulana",
+      "description": "Sidang Skripsi",
+      "time_length": "60",
+      "personils": [
+        "Dr. Yudi Wiisono, M.T.",
+        "Drs. H. Eka Fitriaja R, MT",
+        "Wahyudin, M.T."
+      ]
+    },
+    {
+      "title": "Rabihi Awaludin",
+      "description": "Sidang Skripsi",
+      "time_length": "60",
+      "personils": [
+        "Lala Septem Riza, M.T.Ph.D.",
+        "Dr. Yudi Wiisono, M.T.",
+        "Novi Sofia Fitriasari, M.T."
+      ]
+    },
+    {
+      "title": "Winapamungkas Rino",
+      "description": "Sidang Skripsi",
+      "time_length": "60",
+      "personils": [
+        "Dr. H. Enjang Ali Nurdin, M.Kom.",
+        "Lala Septem Riza, M.T.Ph.D.",
+        "Novi Sofia Fitriasari, M.T."
       ]
     }
   ],
   "existing_schedule": [
     {
-      "name" : "Rani Megasari",
-      "schedule" : "0110101"
+      "name": "Dr. H. Enjang Ali Nurdin, M.Kom.",
+      "schedule": "11111100"
     },
     {
-      "name" : "Rosa A S",
-      "schedule" : "0110101"
+      "name": "Lala Septem Riza, M.T.Ph.D.",
+      "schedule": "10110111"
     },
     {
-      "name" : "Jajang",
-      "schedule" : "0110101"
+      "name": "Dr. Yudi Wiisono, M.T.",
+      "schedule": "11011110"
     },
-  ]
+    {
+      "name": "Jajang Kusnendar, M.T.",
+      "schedule": "01110111"
+    },
+    {
+      "name": "Drs. H. Eka Fitriaja R, MT",
+      "schedule": "11101110"
+    },
+    {
+      "name": "Wahyudin, M.T.",
+      "schedule": "10111011"
+    },
+    {
+      "name": "Novi Sofia Fitriasari, M.T.",
+      "schedule": "11100111"
+    }
+  ],
+  "details": {
+    "time_block" : "60",
+    "total_slot" : "8"
+  }
 }
