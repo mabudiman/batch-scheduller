@@ -60,7 +60,7 @@ public class BatchScheduller {
             
             // Parse data.json (details) into time_block, total_slots
             time_block = parseTimeBlockJson((JSONObject) data);
-            total_slot = parseTotalSLotJson((JSONObject) data);
+            total_slot = parseTotalSlotJson((JSONObject) data);
             
             // Parse data.json (existing_schedule) into personils_data
             personils_data = parseDataJson((JSONObject) data,time_block,total_slot);
@@ -68,9 +68,21 @@ public class BatchScheduller {
             // Parse data.json (events) into events
             events = parseEventJson((JSONObject) data, personils_data);
             
-            
             // Check data for log
             // showParsedData(personils_data,events);
+            
+            // Execute GraphMapping and GraphColoring
+            GraphMapping GM = new GraphMapping(events);
+            GraphColoring gc = new GraphColoring(5);
+            gc.addEdge(0, 1);
+            gc.addEdge(0, 2);
+            gc.addEdge(1, 2);
+            gc.addEdge(1, 3);
+            gc.addEdge(2, 3);
+            gc.addEdge(3, 4);
+            System.out.println("Coloring of graph 1");
+            gc.greedyColoring();
+            
             
             
             
@@ -132,12 +144,12 @@ public class BatchScheduller {
     
     public static int parseTimeBlockJson(JSONObject data) {
         JSONObject details = (JSONObject) data.get("details");
-        return (int) details.get("time_block");
+        return Integer.parseInt((String) details.get("time_block"));
     }
     
     public static int parseTotalSlotJson(JSONObject data) {
         JSONObject details = (JSONObject) data.get("details");
-        return (int) details.get("total_slot");
+        return Integer.parseInt((String) details.get("total_slot"));
     }
     
     public static void showParsedData(Map<String,Personil> personils_data, Event[] events) {
