@@ -21,31 +21,37 @@ import java.util.LinkedList;
 
 /**
  *
- * @author Arief
+ * @author M. Arief Budiman
  */
 public class GraphColoring {
-    private int total_slot;   // No. of vertices
-    private LinkedList<Integer> events[]; //Adjacency List
- 
-    //Constructor
-    GraphColoring(int total_slot)
-    {
+    private int total_slot;
+    private LinkedList<Integer> events_itr[];
+    private Event events[];
+    private int time_domain;
+    
+    public GraphColoring(int total_slot,Event[] events)
+    {   
+        this.events = new Event[total_slot];
+        this.events = events;
         this.total_slot = total_slot;
-        events = new LinkedList[total_slot];
+        events_itr = new LinkedList[total_slot];
         for (int i=0; i<total_slot; ++i)
-            events[i] = new LinkedList();
+            events_itr[i] = new LinkedList();
     }
- 
-    //Function to add an edge into the graph
-    void addEdge(int v,int w)
-    {
-        events[v].add(w);
-        events[w].add(v); //Graph is undirected
+    
+    public void setTimeDomain(int td) {
+        this.time_domain = td;
     }
- 
-    // Assigns colors (starting from 0) to all vertices and
-    // prints the assignment of colors
-    void greedyColoring()
+    
+    public void addEdge(int v,int w)
+    {   
+        if(!events_itr[v].contains(w)){
+            events_itr[v].add(w);
+            events_itr[w].add(v);
+        }
+    }
+    
+    public void greedyColoring()
     {
         int result[] = new int[total_slot];
  
@@ -68,7 +74,7 @@ public class GraphColoring {
         {
             // Process all adjacent vertices and flag their colors
             // as unavailable
-            Iterator<Integer> it = events[u].iterator() ;
+            Iterator<Integer> it = events_itr[u].iterator() ;
             while (it.hasNext())
             {
                 int i = it.next();
@@ -85,7 +91,7 @@ public class GraphColoring {
             result[u] = cr; // Assign the found color
  
             // Reset the values back to false for the next iteration
-            it = events[u].iterator() ;
+            it = events_itr[u].iterator() ;
             while (it.hasNext())
             {
                 int i = it.next();
@@ -99,29 +105,5 @@ public class GraphColoring {
             System.out.println("Vertex " + u + " --->  Color "
                                 + result[u]);
     }
- 
-    // Driver method
-//    public static void main(String args[])
-//    {
-//        GraphColoring g1 = new GraphColoring(5);
-//        g1.addEdge(0, 1);
-//        g1.addEdge(0, 2);
-//        g1.addEdge(1, 2);
-//        g1.addEdge(1, 3);
-//        g1.addEdge(2, 3);
-//        g1.addEdge(3, 4);
-//        System.out.println("Coloring of graph 1");
-//        g1.greedyColoring();
-// 
-//        System.out.println();
-//        GraphColoring g2 = new GraphColoring(5);
-//        g2.addEdge(0, 1);
-//        g2.addEdge(0, 2);
-//        g2.addEdge(1, 2);
-//        g2.addEdge(1, 4);
-//        g2.addEdge(2, 4);
-//        g2.addEdge(4, 3);
-//        System.out.println("Coloring of graph 2 ");
-//        g2.greedyColoring();
-//    }
+    
 }

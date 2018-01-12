@@ -16,21 +16,49 @@
  */
 package batch.scheduller;
 
+import java.util.LinkedList;
+import java.util.Map;
+
 /**
  *
  * @author M. Arief Budiman
  */
-public class GraphMapping {
+public class GraphMapping { 
     
-    
+    public Event events[];
+    public GraphColoring gc;
+    public int total_time_slot;
     
     public GraphMapping(Event[] events) {
-        
+        this.events = events;
+        this.gc = new GraphColoring(events.length,events);
+        int event_itr = 0;
+        for (Event event : this.events) {
+            for (Personil personil : event.personils) {
+                int other_itr = 0;
+                for (Event other_event : this.events) {
+                    if(!event.equals(other_event)) {
+                        for (Personil other_personil : other_event.personils) {
+                            if(personil.equals(other_personil)) {
+                                gc.addEdge(event_itr, other_itr);
+                                System.out.println("add " + event_itr + " + " + other_itr);
+                            }
+                        }
+                    }
+                    other_itr++;
+                }
+            }
+            event_itr++; 
+        }
     }
     
-    public Event getEventPair(Event e) {
-        
-        return e;
+    public void setTotalTimeSlot(int tts) {
+        this.total_time_slot = tts;
+    }
+    
+    public void executeGraphColoring() {
+        System.out.println("Executing graph");
+        gc.greedyColoring();
     }
     
 }

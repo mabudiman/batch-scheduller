@@ -73,16 +73,8 @@ public class BatchScheduller {
             
             // Execute GraphMapping and GraphColoring
             GraphMapping GM = new GraphMapping(events);
-            GraphColoring gc = new GraphColoring(5);
-            gc.addEdge(0, 1);
-            gc.addEdge(0, 2);
-            gc.addEdge(1, 2);
-            gc.addEdge(1, 3);
-            gc.addEdge(2, 3);
-            gc.addEdge(3, 4);
-            System.out.println("Coloring of graph 1");
-            gc.greedyColoring();
-            
+            GM.setTotalTimeSlot(total_slot);
+            GM.executeGraphColoring();
             
             
             
@@ -153,11 +145,12 @@ public class BatchScheduller {
     }
     
     public static void showParsedData(Map<String,Personil> personils_data, Event[] events) {
+        System.out.print("Personils:\n");
         // Check personils data
         for (Map.Entry entry : personils_data.entrySet()) {
-            System.out.print("key: " + entry.getKey() + " | value :");
+            System.out.println("key: " + entry.getKey() + " | value :");
             Personil p = (Personil) entry.getValue();
-            System.out.print(p.name);
+            System.out.println(" | " + p.name);
             TimeTable t = p.schedule;
             for (Event ts : t.time_slots) {
                 if(ts != null) {
@@ -168,10 +161,14 @@ public class BatchScheduller {
             }
             System.out.print("\n");
         }
-
+        
+        System.out.print("\n\nEvents:\n");
         // Check events data
         for (Event event : events) {
-            System.out.println(event.title);
+            System.out.println(event.title + " : ");
+            for (Personil p : event.personils) {
+                System.out.println(" - " + p.name);
+            }
         }
     }
     
