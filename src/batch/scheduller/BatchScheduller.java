@@ -20,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import org.json.simple.JSONArray;
@@ -72,9 +73,12 @@ public class BatchScheduller {
             // showParsedData(personils_data,events);
             
             // Execute GraphMapping and GraphColoring
-            GraphMapping GM = new GraphMapping(events);
-            GM.setTotalTimeSlot(total_slot);
-            GM.executeGraphColoring();
+//            GraphMapping GM = new GraphMapping(events);
+//            GM.setTotalTimeSlot(total_slot);
+//            GM.executeGraphColoring
+            GraphColoring G = new GraphColoring(events.length,events);
+            G.setTimeDomain(total_slot);
+            System.out.println(Arrays.toString(G.fillPossibleTime(events[0])));
             
             
             

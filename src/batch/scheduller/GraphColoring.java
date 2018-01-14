@@ -43,6 +43,24 @@ public class GraphColoring {
         this.time_domain = td;
     }
     
+    public int[] fillPossibleTime(Event e) {
+        int time[] = new int[time_domain];
+        for (int i = 0; i < time_domain; i++) {
+            time[i] = 1; // make all time slot available first
+            System.out.println(time[i]);
+        }
+        
+        for(Personil p : e.personils) {
+            for (int i = 0; i < time_domain; i++) {
+                if(p.schedule.time_slots != null) {
+                    time[i] = 0;
+                }
+            }
+        }
+        
+        return time;
+    }
+    
     public void addEdge(int v,int w)
     {   
         if(!events_itr[v].contains(w)){
