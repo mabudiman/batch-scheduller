@@ -16,6 +16,7 @@
  */
 package batch.scheduller;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -24,19 +25,19 @@ import java.util.LinkedList;
  * @author M. Arief Budiman
  */
 public class GraphColoring {
-    private int total_slot;
     private LinkedList<Integer> events_itr[];
     private Event events[];
     private int time_domain;
+    private int total_slot;
     
     public GraphColoring(int total_slot,Event[] events)
     {   
         this.events = new Event[total_slot];
         this.events = events;
         this.total_slot = total_slot;
-        events_itr = new LinkedList[total_slot];
+        this.events_itr = new LinkedList[total_slot];
         for (int i=0; i<total_slot; ++i)
-            events_itr[i] = new LinkedList();
+            this.events_itr[i] = new LinkedList();
     }
     
     public void setTimeDomain(int td) {
@@ -47,12 +48,11 @@ public class GraphColoring {
         int time[] = new int[time_domain];
         for (int i = 0; i < time_domain; i++) {
             time[i] = 1; // make all time slot available first
-            System.out.println(time[i]);
         }
         
         for(Personil p : e.personils) {
             for (int i = 0; i < time_domain; i++) {
-                if(p.schedule.time_slots != null) {
+                if(p.schedule.time_slots[i] != null) {
                     time[i] = 0;
                 }
             }
@@ -69,27 +69,162 @@ public class GraphColoring {
         }
     }
     
+    public void sortVertex()
+    {
+        // sort vertex into sorted_itr with quicksort
+        sort(events_itr,0,total_slot-1);
+    }
+    
+    private int partition(LinkedList<Integer> arr[], int low, int high)
+    {
+        int pivot = arr[high].size(); 
+        int i = (low-1); // index of smaller element
+        for (int j=low; j<high; j++)
+        {
+            // If current element is smaller than or
+            // equal to pivot
+            if (arr[j].size() >= pivot)
+            {
+                i++;
+ 
+                // swap arr[i] and arr[j]
+                LinkedList<Integer> temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+                
+                // swap related event
+                Event eventTemp = events[i];
+                events[i] = events[j];
+                events[j] = eventTemp;
+            }
+        }
+ 
+        // swap arr[i+1] and arr[high] (or pivot)
+        LinkedList<Integer> temp = arr[i+1];
+        arr[i+1] = arr[high];
+        arr[high] = temp;
+        
+        // swap related event
+        Event eventTemp = events[i+1];
+        events[i+1] = events[high];
+        events[high] = eventTemp;
+ 
+        return i+1;
+    }
+    
+    private void sort(LinkedList<Integer> arr[], int low, int high)
+    {
+        if (low < high)
+        {
+            /* pi is partitioning index, arr[pi] is 
+              now at right place */
+            int pi = partition(arr, low, high);
+ 
+            // Recursively sort elements before
+            // partition and after partition
+            sort(arr, low, pi-1);
+            sort(arr, pi+1, high);
+        }
+    }
+    
+    public void welshPowellColoring()
+    {
+        // use sortVertex method to sort the events_itr & events
+        // it's sorted base on number on edge (number of vertex that linked to)
+        sortVertex();
+        
+        // result of allocated time for every event, -1 means unschedulled
+        int result[] = new int[total_slot];
+        for (int u = 0; u < total_slot; u++)
+            result[u] = -1;
+
+        // A temporary array to store the available colors.
+        boolean available[] = new boolean[time_domain];
+        for (int cr = 0; cr < time_domain; cr++)
+            available[cr] = true;
+        
+        int cur = 0;
+        // Going through event array that have been sorted
+        while (cur < total_slot) {
+            System.out.println(Arrays.toString(available));
+            if(result[cur] == -1) {
+                // Find available time for the event
+                // and flag the color(time) as unavailable
+                int[] availableTimes = fillPossibleTime(events[cur]);
+                System.out.println(Arrays.toString(availableTimes));
+                
+                // Find available color(time) for current(cur) event
+                int i = 0;
+                while(i < time_domain) {
+                    if (available[i] == true && availableTimes[i] == 1) {
+                        result[cur] = i;
+                        available[i] = false;
+                        System.out.println(cur + " = " + i);
+                        break;
+                    }
+                    i++;
+                }
+                
+                // Find other vertex(event) that can be assign on that color(time)
+                int itr = cur+1;
+                while(itr < total_slot) {
+                    boolean noAdjacentSameColor = true;
+                    
+                    // checking adjacent color(time)
+                    Iterator<Integer> it = events_itr[itr].iterator() ;
+                    while (it.hasNext())
+                    {
+                        int j = it.next();
+                        if (result[j] == i) {
+                            noAdjacentSameColor = false;
+                            break;
+                        }
+                    }
+                    
+                    // checking possible event time (based on personil schedule)
+                    if(noAdjacentSameColor){
+                        availableTimes = fillPossibleTime(events[itr]);
+                        System.out.println(itr + " - " + Arrays.toString(availableTimes));
+                        if(availableTimes[i] == 1) {
+                            result[itr] = i;
+                            System.out.println(itr + " = " + i);
+                        }
+                    }
+                    itr++;
+                }
+                
+            }
+            cur++;
+        }
+        
+        // Show result coloring(scheduling)
+        for (int i = 0; i < total_slot; i++) {
+            System.out.println(events[i].title + " = " + result[i]);
+        }
+    }
+    
     public void greedyColoring()
     {
         int result[] = new int[total_slot];
  
         // Assign the first color to first vertex
-        result[0]  = 0;
+//        result[0]  = 0;
  
         // Initialize remaining V-1 vertices as unassigned
-        for (int u = 1; u < total_slot; u++)
+        for (int u = 0; u < total_slot; u++)
             result[u] = -1;  // no color is assigned to u
  
         // A temporary array to store the available colors. True
         // value of available[cr] would mean that the color cr is
         // assigned to one of its adjacent vertices
-        boolean available[] = new boolean[total_slot];
-        for (int cr = 0; cr < total_slot; cr++)
+        boolean available[] = new boolean[time_domain];
+        for (int cr = 0; cr < time_domain; cr++)
             available[cr] = false;
  
         // Assign colors to remaining V-1 vertices
-        for (int u = 1; u < total_slot; u++)
+        for (int u = 0; u < total_slot; u++)
         {
+            System.out.println(Arrays.toString(available));
             // Process all adjacent vertices and flag their colors
             // as unavailable
             Iterator<Integer> it = events_itr[u].iterator() ;
@@ -99,23 +234,29 @@ public class GraphColoring {
                 if (result[i] != -1)
                     available[result[i]] = true;
             }
- 
+            
+            System.out.println(Arrays.toString(available));
+            
+            // Find available time for the event
+            // and flag the color(time) as unavailable
+            int[] availableTimes = fillPossibleTime(events[u]);
+            
+            System.out.println(Arrays.toString(availableTimes));
+            
             // Find the first available color
             int cr;
-            for (cr = 0; cr < total_slot; cr++)
-                if (available[cr] == false)
+            for (cr = 0; cr < time_domain; cr++)
+                if (available[cr] == false && availableTimes[cr] == 1)
                     break;
+            
+            if(cr <= 7)
+                result[u] = cr; // Assign the found color
  
-            result[u] = cr; // Assign the found color
- 
+            System.out.println(u + " = " + result[u]);
+            
             // Reset the values back to false for the next iteration
-            it = events_itr[u].iterator() ;
-            while (it.hasNext())
-            {
-                int i = it.next();
-                if (result[i] != -1)
-                    available[result[i]] = false;
-            }
+            for (cr = 0; cr < time_domain; cr++)
+                available[cr] = false;
         }
  
         // print the result

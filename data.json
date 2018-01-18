@@ -64,31 +64,31 @@
   "existing_schedule": [
     {
       "name": "Dr. H. Enjang Ali Nurdin, M.Kom.",
-      "schedule": "11111100"
-    },
-    {
-      "name": "Lala Septem Riza, M.T.Ph.D.",
-      "schedule": "10110111"
-    },
-    {
-      "name": "Dr. Yudi Wiisono, M.T.",
-      "schedule": "11011110"
-    },
-    {
-      "name": "Jajang Kusnendar, M.T.",
-      "schedule": "01110111"
-    },
-    {
-      "name": "Drs. H. Eka Fitriaja R, MT",
-      "schedule": "11101110"
-    },
-    {
-      "name": "Wahyudin, M.T.",
       "schedule": "10111011"
     },
     {
+      "name": "Lala Septem Riza, M.T.Ph.D.",
+      "schedule": "10111011"
+    },
+    {
+      "name": "Dr. Yudi Wiisono, M.T.",
+      "schedule": "11001111"
+    },
+    {
+      "name": "Jajang Kusnendar, M.T.",
+      "schedule": "01011111"
+    },
+    {
+      "name": "Drs. H. Eka Fitriaja R, MT",
+      "schedule": "11011101"
+    },
+    {
+      "name": "Wahyudin, M.T.",
+      "schedule": "01110111"
+    },
+    {
       "name": "Novi Sofia Fitriasari, M.T.",
-      "schedule": "11100111"
+      "schedule": "11011101"
     }
   ],
   "details": {

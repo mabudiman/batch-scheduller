@@ -41,7 +41,7 @@ public class GraphMapping {
                         for (Personil other_personil : other_event.personils) {
                             if(personil.equals(other_personil)) {
                                 gc.addEdge(event_itr, other_itr);
-                                System.out.println("add " + event_itr + " + " + other_itr);
+//                                System.out.println("add " + event_itr + " + " + other_itr);
                             }
                         }
                     }
@@ -54,11 +54,16 @@ public class GraphMapping {
     
     public void setTotalTimeSlot(int tts) {
         this.total_time_slot = tts;
+        gc.setTimeDomain(tts);
     }
     
     public void executeGraphColoring() {
         System.out.println("Executing graph");
         gc.greedyColoring();
+    }
+    
+    public void welshPowellColoring() {
+        gc.welshPowellColoring();
     }
     
 }

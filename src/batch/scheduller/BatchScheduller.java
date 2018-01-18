@@ -73,12 +73,15 @@ public class BatchScheduller {
             // showParsedData(personils_data,events);
             
             // Execute GraphMapping and GraphColoring
-//            GraphMapping GM = new GraphMapping(events);
-//            GM.setTotalTimeSlot(total_slot);
-//            GM.executeGraphColoring
-            GraphColoring G = new GraphColoring(events.length,events);
-            G.setTimeDomain(total_slot);
-            System.out.println(Arrays.toString(G.fillPossibleTime(events[0])));
+            GraphMapping GM = new GraphMapping(events);
+            GM.setTotalTimeSlot(total_slot);
+//            GM.executeGraphColoring();
+            GM.welshPowellColoring();
+//            GraphColoring G = new GraphColoring(events.length,events);
+//            G.setTimeDomain(total_slot);
+//            for (Event event : events) {
+//                System.out.println(Arrays.toString(G.fillPossibleTime(event)));
+//            }
             
             
             
