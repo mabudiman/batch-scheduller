@@ -75,13 +75,7 @@ public class BatchScheduller {
             // Execute GraphMapping and GraphColoring
             GraphMapping GM = new GraphMapping(events);
             GM.setTotalTimeSlot(total_slot);
-//            GM.executeGraphColoring();
             GM.welshPowellColoring();
-//            GraphColoring G = new GraphColoring(events.length,events);
-//            G.setTimeDomain(total_slot);
-//            for (Event event : events) {
-//                System.out.println(Arrays.toString(G.fillPossibleTime(event)));
-//            }
             
             
             
@@ -101,11 +95,9 @@ public class BatchScheduller {
         // Get existing schedule
         JSONArray ex_schedule = (JSONArray) data.get("existing_schedule");
         for (int i = 0; i < ex_schedule.size() ; i++) {
-            // System.out.println( ex_schedule.get(i) );
             JSONObject person = (JSONObject) ex_schedule.get(i);
             String name = (String) person.get("name");
             String schedule = (String) person.get("schedule");
-            //System.out.println( name + " | " + schedule);
             personils_data.put(name, new Personil(name, new TimeTable(time_block,total_slot,schedule)));
         }
         
@@ -131,11 +123,9 @@ public class BatchScheduller {
             Personil[] personils = new Personil[dosen.size()];
             for (int j = 0; j < dosen.size(); j++) {
                 personils[j] = personils_data.get((String)dosen.get(j));
-                //System.out.print(dosen.get(j));
             }
             
             result[i] = new Event(title,description,time_length,personils);
-            // System.out.println(title + " | " + description + " | " + time_length);
         }
         
         return result;

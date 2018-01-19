@@ -207,9 +207,6 @@ public class GraphColoring {
     {
         int result[] = new int[total_slot];
  
-        // Assign the first color to first vertex
-//        result[0]  = 0;
- 
         // Initialize remaining V-1 vertices as unassigned
         for (int u = 0; u < total_slot; u++)
             result[u] = -1;  // no color is assigned to u
@@ -224,7 +221,6 @@ public class GraphColoring {
         // Assign colors to remaining V-1 vertices
         for (int u = 0; u < total_slot; u++)
         {
-            System.out.println(Arrays.toString(available));
             // Process all adjacent vertices and flag their colors
             // as unavailable
             Iterator<Integer> it = events_itr[u].iterator() ;
@@ -235,13 +231,9 @@ public class GraphColoring {
                     available[result[i]] = true;
             }
             
-            System.out.println(Arrays.toString(available));
-            
             // Find available time for the event
             // and flag the color(time) as unavailable
             int[] availableTimes = fillPossibleTime(events[u]);
-            
-            System.out.println(Arrays.toString(availableTimes));
             
             // Find the first available color
             int cr;

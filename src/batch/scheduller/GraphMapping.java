@@ -41,7 +41,6 @@ public class GraphMapping {
                         for (Personil other_personil : other_event.personils) {
                             if(personil.equals(other_personil)) {
                                 gc.addEdge(event_itr, other_itr);
-//                                System.out.println("add " + event_itr + " + " + other_itr);
                             }
                         }
                     }
