@@ -77,6 +77,8 @@ public class BatchScheduller {
             GM.setTotalTimeSlot(total_slot);
             GM.welshPowellColoring();
             
+            JSONGenerator JG = new JSONGenerator();
+            JG.generate((JSONObject) data);
             
             
         } catch (FileNotFoundException e) {

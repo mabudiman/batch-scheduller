@@ -16,6 +16,20 @@
  */
 package batch.scheduller;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 /**
  *
  * @author Arief
@@ -24,6 +38,24 @@ public class JSONGenerator {
 
     public JSONGenerator() {
         
+    }
+    
+    public void generate(JSONObject data) {
+        FileWriter fw;
+        DateFormat dateFormat = new SimpleDateFormat("HH-mm-ss yyyy-MM-dd");
+        Date date = new Date();
+        try {
+            Path pathToFile = Paths.get("datatest/" + dateFormat.format(date) +"/data.json");
+            Files.createDirectories(pathToFile.getParent());
+            Files.createFile(pathToFile);
+            File file = new File("datatest/" + dateFormat.format(date) +"/data.json");
+            fw = new FileWriter(file);
+            fw.write(data.toJSONString());
+            fw.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        System.out.println("Done");
     }
     
 }
