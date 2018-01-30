@@ -19,6 +19,7 @@ package batch.scheduller;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.ListIterator;
 
 /**
  *
@@ -27,6 +28,7 @@ import java.util.LinkedList;
 public class GraphColoring {
     private LinkedList<Integer> events_itr[];
     private Event events[];
+    private int result[];
     private int time_domain;
     private int total_slot;
     
@@ -42,6 +44,22 @@ public class GraphColoring {
     
     public void setTimeDomain(int td) {
         this.time_domain = td;
+    }
+
+    public LinkedList<Integer>[] getEvents_itr() {
+        return events_itr;
+    }
+
+    public Event[] getEvents() {
+        return events;
+    }
+
+    public void setEvents(Event[] events) {
+        this.events = events;
+    }
+
+    public int[] getResult() {
+        return result;
     }
     
     public int[] fillPossibleTime(Event e) {
@@ -69,6 +87,20 @@ public class GraphColoring {
         }
     }
     
+    public void swapElementList(int a, int b)
+    {
+        for (LinkedList<Integer> events_itr1 : events_itr) {
+            for (int j = 0; j < events_itr1.size(); j++) {
+                if (events_itr1.get(j) == a) {
+                    events_itr1.set(j, b);
+                }
+                if (events_itr1.get(j) == b) {
+                    events_itr1.set(j, a);
+                }
+            }
+        }
+    }
+    
     public void sortVertex()
     {
         // sort vertex into sorted_itr with quicksort
@@ -91,6 +123,7 @@ public class GraphColoring {
                 LinkedList<Integer> temp = arr[i];
                 arr[i] = arr[j];
                 arr[j] = temp;
+                swapElementList(i,j);
                 
                 // swap related event
                 Event eventTemp = events[i];
@@ -103,6 +136,7 @@ public class GraphColoring {
         LinkedList<Integer> temp = arr[i+1];
         arr[i+1] = arr[high];
         arr[high] = temp;
+        swapElementList(i+1,high);
         
         // swap related event
         Event eventTemp = events[i+1];
@@ -134,7 +168,7 @@ public class GraphColoring {
         sortVertex();
         
         // result of allocated time for every event, -1 means unschedulled
-        int result[] = new int[total_slot];
+        result = new int[total_slot];
         for (int u = 0; u < total_slot; u++)
             result[u] = -1;
 
@@ -146,12 +180,10 @@ public class GraphColoring {
         int cur = 0;
         // Going through event array that have been sorted
         while (cur < total_slot) {
-            System.out.println(Arrays.toString(available));
             if(result[cur] == -1) {
                 // Find available time for the event
                 // and flag the color(time) as unavailable
                 int[] availableTimes = fillPossibleTime(events[cur]);
-                System.out.println(Arrays.toString(availableTimes));
                 
                 // Find available color(time) for current(cur) event
                 int i = 0;
@@ -159,7 +191,7 @@ public class GraphColoring {
                     if (available[i] == true && availableTimes[i] == 1) {
                         result[cur] = i;
                         available[i] = false;
-                        System.out.println(cur + " = " + i);
+//                        System.out.println(events[cur].title + " = " + result[cur]);
                         break;
                     }
                     i++;
@@ -167,27 +199,31 @@ public class GraphColoring {
                 
                 // Find other vertex(event) that can be assign on that color(time)
                 int itr = cur+1;
-                while(itr < total_slot) {
-                    boolean noAdjacentSameColor = true;
-                    
-                    // checking adjacent color(time)
-                    Iterator<Integer> it = events_itr[itr].iterator() ;
-                    while (it.hasNext())
-                    {
-                        int j = it.next();
-                        if (result[j] == i) {
-                            noAdjacentSameColor = false;
-                            break;
+                while(itr < total_slot && i < time_domain) {
+                    // If the vertex not assigned yet
+                    if(result[itr] == -1){
+                        boolean noAdjacentSameColor = true;
+                        // checking adjacent color(time)
+                        ListIterator<Integer> it = events_itr[itr].listIterator() ;
+//                        events_itr[itr].forEach(System.out::println);
+//                        System.out.print(events[itr].title + " -> ");
+                        while (it.hasNext())
+                        {
+                            int j = it.next();
+//                            System.out.print(j + " " + events[j].title + "=" + result[j] + " | ");
+                            if (result[j] == i) {
+                                noAdjacentSameColor = false;
+                                break;
+                            }
                         }
-                    }
-                    
-                    // checking possible event time (based on personil schedule)
-                    if(noAdjacentSameColor){
-                        availableTimes = fillPossibleTime(events[itr]);
-                        System.out.println(itr + " - " + Arrays.toString(availableTimes));
-                        if(availableTimes[i] == 1) {
-                            result[itr] = i;
-                            System.out.println(itr + " = " + i);
+//                        System.out.println();
+                        // checking possible event time (based on personil schedule)
+                        if(noAdjacentSameColor){
+                            availableTimes = fillPossibleTime(events[itr]);
+                            if(availableTimes[i] == 1) {
+                                result[itr] = i;
+//                                System.out.println("Bisa warna sama : " + events[itr].title + " = " + result[itr]);
+                            }
                         }
                     }
                     itr++;
@@ -198,9 +234,10 @@ public class GraphColoring {
         }
         
         // Show result coloring(scheduling)
-        for (int i = 0; i < total_slot; i++) {
-            System.out.println(events[i].title + " = " + result[i]);
-        }
+//        for (int i = 0; i < total_slot; i++) {
+//            System.out.println(events[i].title + " = " + result[i]);
+//        }
+//        System.out.println("====== DONE =======");
     }
     
     public void greedyColoring()

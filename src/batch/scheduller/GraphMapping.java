@@ -55,6 +55,14 @@ public class GraphMapping {
         this.total_time_slot = tts;
         gc.setTimeDomain(tts);
     }
+
+    public Event[] getEvents() {
+        return events;
+    }
+
+    public GraphColoring getGc() {
+        return gc;
+    }
     
     public void executeGraphColoring() {
         System.out.println("Executing graph");

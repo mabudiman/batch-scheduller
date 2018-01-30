@@ -20,6 +20,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,53 +37,80 @@ import org.json.simple.parser.ParseException;
  */
 public class BatchScheduller {
     
-    public BatchScheduller() {
+    // Tracking variable
+    public int failSchedulles;
+    public int failSchedulleRates;
+    public int usedColorRates;
     
+    
+    public BatchScheduller(int total_event, int total_personil, int busy, int normal, int loose, 
+                         int time_block, int total_slot, int total_data) {
+        JSONGenerator JG = new JSONGenerator(total_event,total_personil,busy,normal,loose,time_block,total_slot,total_data);
+        Path pathToFile = Paths.get(JG.getLastPath());
+        failSchedulles = 0;
+        failSchedulleRates = 0;
+        usedColorRates = 0;
+        for(int k = 0;k < total_data;k++){
+//            System.out.println("Data ke : " + k);
+            executeJSON(pathToFile,k);
+        }
     }
     
-    /**
-     * @param args the command line arguments
-     */
-    @SuppressWarnings("unchecked")
-    public static void main(String[] args) {
+    private void executeJSON(Path pathToFile, int dataNumber){
         // JSON parser object to parse read file
         JSONParser jsonParser = new JSONParser();
         // personils_data is existing every personil schedule
         Map<String,Personil> personils_data = new HashMap<>();
         // events is every event to be scheduled
         Event[] events = new Event[]{};
-        // detail timetable variables
-        int time_block;
-        int total_slot;
-         
-        try (FileReader reader = new FileReader("data.json"))
+        try (FileReader reader = new FileReader(pathToFile.getParent()+"/data "+dataNumber+".json"))
         {
             // Read JSON file
             Object data = jsonParser.parse(reader);
             // System.out.println(data);
             
             // Parse data.json (details) into time_block, total_slots
-            time_block = parseTimeBlockJson((JSONObject) data);
-            total_slot = parseTotalSlotJson((JSONObject) data);
-            
+            int time_block = parseTimeBlockJson((JSONObject) data);
+            int total_slot = parseTotalSlotJson((JSONObject) data);
+
             // Parse data.json (existing_schedule) into personils_data
             personils_data = parseDataJson((JSONObject) data,time_block,total_slot);
-            
+
             // Parse data.json (events) into events
             events = parseEventJson((JSONObject) data, personils_data);
-            
+
             // Check data for log
             // showParsedData(personils_data,events);
-            
+
             // Execute GraphMapping and GraphColoring
             GraphMapping GM = new GraphMapping(events);
             GM.setTotalTimeSlot(total_slot);
             GM.welshPowellColoring();
             
-            JSONGenerator JG = new JSONGenerator();
-            JG.generate((JSONObject) data);
-            
-            
+//            System.out.println("====== RESULT =======");
+            int fail = 0;
+            int color[] = new int[total_slot];
+            for (int i = 0; i < total_slot; i++) {
+                color[i] = 0;
+            }
+            int colorUsed = 0;
+            for (int i = 0; i < GM.getGc().getEvents().length; i++) {
+//                System.out.println(GM.getGc().getEvents()[i].title + " = " + GM.getGc().getResult()[i]);
+                if(GM.getGc().getResult()[i] == -1){
+                    failSchedulles++;
+                    fail++;
+                }else{
+                    if(color[GM.getGc().getResult()[i]] == 0){
+                        color[GM.getGc().getResult()[i]] = 1;
+                        colorUsed++;
+                    }
+                }
+            }
+            failSchedulleRates += fail;
+            usedColorRates += colorUsed;
+//            System.out.println("fail : " + fail + " , colorUsed : " + colorUsed);
+//            System.out.println("======  DONE  =======");
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -171,6 +201,29 @@ public class BatchScheduller {
         }
     }
     
-    
+    /**
+     * @param args the command line arguments
+     */
+    @SuppressWarnings("unchecked")
+    public static void main(String[] args) {
+         // BatchScheduller(int total_event, int total_personil, int busy, int normal, int loose, 
+         //                int time_block, int total_slot, int total_data)
+         int total_data = 50;
+         int total_slot = 10;
+         int total_event = 10;
+         int total_personil = 20;
+         int busy = 10;
+         int normal = 10;
+         int loose = total_personil - busy - normal;
+         int time_block = 60;
+         for (int i = 0; i < 10; i++) {
+            BatchScheduller BS = new BatchScheduller(total_event,total_personil,--busy,--normal,loose,time_block,total_slot,total_data);
+            System.out.println("===== STATISTIK DATA =====");
+            System.out.println("Total kegagalan : " + BS.failSchedulles + " dari total " + (total_event*total_data) + " event di " + total_data + " batch");
+            System.out.println("Rata-rata kegagalan perbatch : " + ((float)BS.failSchedulleRates/total_data) + " per batch dari " + total_data + " batch");
+            System.out.println("Rata-rata waktu digunakan : " + ((float)BS.usedColorRates/total_data) + " per batch dari " + total_slot + " timeslot");
+            System.out.println("===== STATISTIK DATA =====");
+         }
+    }
     
 }
