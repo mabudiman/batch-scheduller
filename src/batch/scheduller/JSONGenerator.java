@@ -101,7 +101,7 @@ public class JSONGenerator {
 
             JSONObject data = new JSONObject();
             data.put("events", events);
-            data.put("existing_schedule", existing_schedule);
+            data.put("existing_data", existing_schedule);
             data.put("details", details);
             this.generate(data,path);
         }
@@ -129,7 +129,7 @@ public class JSONGenerator {
                 }else if(i < normal+busy){
                     schedule = generateRandomSchedule(total_slot,50);
                 }else{
-                    schedule = generateRandomSchedule(total_slot,80);
+                    schedule = generateRandomSchedule(total_slot,100);
                 }
                 personil.put("name", "personil "+i);
                 personil.put("schedule", schedule);
@@ -176,7 +176,7 @@ public class JSONGenerator {
 
             JSONObject data = new JSONObject();
             data.put("events", events);
-            data.put("existing_schedule", existing_schedule);
+            data.put("existing_data", existing_schedule);
             data.put("details", details);
             this.generate(data,path);
         }

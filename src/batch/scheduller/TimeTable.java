@@ -46,9 +46,11 @@ public class TimeTable {
         this.time_block = time_block;
         this.total_slot = total_slot;
         this.time_slots = new Event[total_slot];
-        for (int i = 0; i < total_slot; i++) {
-            if( '1' == schedule.charAt(i)) {
-                time_slots[i] = new Event("private", 60);
+        if(schedule != null){
+            for (int i = 0; i < total_slot; i++) {
+                if( '1' == schedule.charAt(i)) {
+                    time_slots[i] = new Event("private", 60);
+                }
             }
         }
     }

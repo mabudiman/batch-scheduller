@@ -16,6 +16,7 @@
  */
 package batch.scheduller;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -41,6 +42,7 @@ public class BatchScheduller {
     public int failSchedulles;
     public int failSchedulleRates;
     public int usedColorRates;
+    public String reports;
     
     
     public BatchScheduller(int total_event, int total_personil, int busy, int normal, int loose, 
@@ -50,28 +52,49 @@ public class BatchScheduller {
         failSchedulles = 0;
         failSchedulleRates = 0;
         usedColorRates = 0;
+//        System.out.println(pathToFile);
         for(int k = 0;k < total_data;k++){
 //            System.out.println("Data ke : " + k);
-            executeJSON(pathToFile,k);
+            executeJSON(pathToFile,"data "+k+".json");
         }
     }
     
-    private void executeJSON(Path pathToFile, int dataNumber){
+    public BatchScheduller(String dir){
+        failSchedulles = 0;
+        failSchedulleRates = 0;
+        usedColorRates = 0;
+        reports = "";
+//        System.out.println(dir);
+        File directory = new File(dir);
+        //get all the files from a directory
+        File[] fList = directory.listFiles();
+        for (File file : fList){
+            if (file.isFile()){
+//                System.out.println(file.toPath()+"/"+file.getName());
+                executeJSON(file.toPath(),file.getName());
+            }
+        }
+//        executeJSON(pathToFile,0);
+    }
+    
+    private void executeJSON(Path pathToFile, String fileName){
         // JSON parser object to parse read file
         JSONParser jsonParser = new JSONParser();
         // personils_data is existing every personil schedule
         Map<String,Personil> personils_data = new HashMap<>();
         // events is every event to be scheduled
         Event[] events = new Event[]{};
-        try (FileReader reader = new FileReader(pathToFile.getParent()+"/data "+dataNumber+".json"))
+        try (FileReader reader = new FileReader(pathToFile.getParent()+"/"+fileName))
         {
             // Read JSON file
             Object data = jsonParser.parse(reader);
-            // System.out.println(data);
+//            System.out.println(data);
             
             // Parse data.json (details) into time_block, total_slots
-            int time_block = parseTimeBlockJson((JSONObject) data);
+            int time_block = 60; // Default time block, use parseTimeBlockJson to parse from JSON
             int total_slot = parseTotalSlotJson((JSONObject) data);
+//            System.out.println(time_block);
+//            System.out.println(total_slot);
 
             // Parse data.json (existing_schedule) into personils_data
             personils_data = parseDataJson((JSONObject) data,time_block,total_slot);
@@ -80,7 +103,7 @@ public class BatchScheduller {
             events = parseEventJson((JSONObject) data, personils_data);
 
             // Check data for log
-            // showParsedData(personils_data,events);
+            showParsedData(personils_data,events);
 
             // Execute GraphMapping and GraphColoring
             GraphMapping GM = new GraphMapping(events);
@@ -88,6 +111,7 @@ public class BatchScheduller {
             GM.welshPowellColoring();
             
 //            System.out.println("====== RESULT =======");
+            reports+="=====================\n"+fileName+"\n";
             int fail = 0;
             int color[] = new int[total_slot];
             for (int i = 0; i < total_slot; i++) {
@@ -109,8 +133,8 @@ public class BatchScheduller {
             failSchedulleRates += fail;
             usedColorRates += colorUsed;
 //            System.out.println("fail : " + fail + " , colorUsed : " + colorUsed);
+            reports+="sidang yang gagal : " + fail + " , waktu yang digunakan : " + colorUsed + "\n";
 //            System.out.println("======  DONE  =======");
-
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -125,7 +149,7 @@ public class BatchScheduller {
         Map<String,Personil> personils_data = new HashMap<>();
         
         // Get existing schedule
-        JSONArray ex_schedule = (JSONArray) data.get("existing_schedule");
+        JSONArray ex_schedule = (JSONArray) data.get("existing_data");
         for (int i = 0; i < ex_schedule.size() ; i++) {
             JSONObject person = (JSONObject) ex_schedule.get(i);
             String name = (String) person.get("name");
@@ -148,8 +172,8 @@ public class BatchScheduller {
             JSONObject item = (JSONObject) events.get(i);
             
             String title = (String) item.get("title");
-            String description = (String) item.get("description");
-            int time_length = Integer.parseInt( (String) item.get("time_length") );
+            String description = ""; // use item.get to add description from JSON
+            int time_length = 0; // use item.get to add time length from JSON
             JSONArray dosen = (JSONArray) item.get("personils");
             
             Personil[] personils = new Personil[dosen.size()];
@@ -206,24 +230,7 @@ public class BatchScheduller {
      */
     @SuppressWarnings("unchecked")
     public static void main(String[] args) {
-         // BatchScheduller(int total_event, int total_personil, int busy, int normal, int loose, 
-         //                int time_block, int total_slot, int total_data)
-         int total_data = 50;
-         int total_slot = 10;
-         int total_event = 10;
-         int total_personil = 20;
-         int busy = 10;
-         int normal = 10;
-         int loose = total_personil - busy - normal;
-         int time_block = 60;
-         for (int i = 0; i < 10; i++) {
-            BatchScheduller BS = new BatchScheduller(total_event,total_personil,--busy,--normal,loose,time_block,total_slot,total_data);
-            System.out.println("===== STATISTIK DATA =====");
-            System.out.println("Total kegagalan : " + BS.failSchedulles + " dari total " + (total_event*total_data) + " event di " + total_data + " batch");
-            System.out.println("Rata-rata kegagalan perbatch : " + ((float)BS.failSchedulleRates/total_data) + " per batch dari " + total_data + " batch");
-            System.out.println("Rata-rata waktu digunakan : " + ((float)BS.usedColorRates/total_data) + " per batch dari " + total_slot + " timeslot");
-            System.out.println("===== STATISTIK DATA =====");
-         }
+         BatchScheduller BS = new BatchScheduller("datatest/ilkom");
     }
     
 }
